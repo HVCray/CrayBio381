@@ -76,7 +76,7 @@ Hailey Cray: Homework #1
    C(Psychiatric co-morbidities) --> A
    D(Poor family support) --> A
    E(Unreliable transportation) --> A
-   F(Unstable housing) --> A
+   F(Unstable housing or homelessness) --> A
    G(Poor sober support system) --> A
    H(Financial instability) --> A
    
@@ -84,6 +84,7 @@ Hailey Cray: Homework #1
    ```
 
    ![](/Users/HaileyCray/Desktop/Computational Biology/IMG_5642.jpeg)
+   
    
 
    
