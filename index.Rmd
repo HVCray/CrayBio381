@@ -7,7 +7,8 @@ output:
     theme: journal
 ---
 ## Homework 01
-[Typora document](Homework 1.html)
+[Typora document](homework one real thing.html)
+
 
 
 

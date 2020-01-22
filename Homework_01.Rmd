@@ -1,9 +1,0 @@
----
-title: "Homework_01"
-author: "Hailey Cray"
-date: "1/22/2020"
-output: html_document
----
-[typora document](Homework 1.html)
-
-
