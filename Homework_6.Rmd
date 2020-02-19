@@ -1,0 +1,141 @@
+---
+title: "Homework_6"
+author: "Hailey Cray"
+date: "2/19/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2) 
+library(MASS) 
+# ggplot is called for the graphics, and MASS is called for maximum likelihood estimations.
+```
+
+ 
+
+Now the data on systolic blood pressure are called. 
+```{r}
+z <- read.table("/Users/HaileyCray/Desktop/SysBP.csv",header=TRUE,sep=",",stringsAsFactors=FALSE)
+str(z)
+summary(z)
+```
+
+
+```{r}
+# z <- rnorm(n=25,mean=132.5)
+# z <- data.frame(1:3000,z)
+# names(z) <- list("Patient_ID","Sys_BP")
+# z <- z[z$myVar>0,]
+# str(z)
+# summary(z$myVar)
+# This is for "fake" data. 
+```
+
+
+```{r}
+# Then this systolic blood pressure data from 25 pregnant indivuduals is plotted in a simple histogram. 
+p1 <- ggplot(data=z, aes(x=Sys_BP, y=..density..)) +
+  geom_histogram(color="orchid",fill="aquamarine2",size=0.2) 
+print(p1)
+```
+
+```{r}
+# Then an empirical density curve is added to the histogram to smooth out the shape. 
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+
+```
+
+
+```{r}
+# Now a normal distribution is fit to these data. The maximum likelihood estimators of the two parameters of the normal distribution for the mean and the variance are grabbed. 
+normPars <- fitdistr(z$Sys_BP,"normal")
+print(normPars)
+str(normPars)
+normPars$estimate["mean"] 
+# note structure of getting a named attribute
+```
+
+ 
+```{r}
+# Next, the normal probability density was plotted.
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+
+xval <- seq(0,max(z$Sys_BP),len=length(z$Sys_BP))
+
+ stat <- stat_function(aes(x = xval, y = ..y..), fun = dnorm, colour="red", n = length(z$Sys_BP), args = list(mean = meanML, sd = sdML))
+ p1 + stat
+```
+
+```{r}
+# Then the exponential probability density was plotted. 
+expoPars <- fitdistr(z$Sys_BP,"exponential")
+rateML <- expoPars$estimate["rate"]
+
+stat2 <- stat_function(aes(x = xval, y = ..y..), fun = dexp, colour="blue", n = length(z$Sys_BP), args = list(rate=rateML))
+ p1 + stat + stat2
+ 
+```
+
+```{r}
+# Following that, the uniform probability density of the data was plotted using the minimum and maximum of the data as the parameters. 
+stat3 <- stat_function(aes(x = Sys_BP, y = ..y..), fun = dunif, colour="darkgreen", n = length(z$Sys_BP), args = list(min=min(z$Sys_BP), max=max(z$Sys_BP)))
+ p1 + stat + stat2 + stat3
+```
+
+The gamma probability density was plotted: 
+```{r}
+gammaPars <- fitdistr(z$Sys_BP,"gamma")
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+
+stat4 <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="brown", n = length(z$Sys_BP), args = list(shape=shapeML, rate=rateML))
+ p1 + stat + stat2 + stat3 + stat4
+```
+4. The gamma distribution fit the systolic blood pressure data the best. In a gamma distribution, the maximum likelihod parameters are: 
+```{r}
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+print(shapeML)
+print(rateML)
+```
+5. The maxiumum likelihood parameters in the gamma distribution are shape: 43.7206 and rate: 0.3299181. 
+```{r}
+# Creating simulated blood pressure data set
+sim <-rgamma(n=25, shape=shapeML, rate=rateML)
+sim <- data.frame(sim)
+print(sim)
+p3 <- ggplot(data=sim, aes(x=sim, y=..density..)) +
+  geom_histogram(color="orchid",fill="aquamarine2",size=0.2)
+print(p3)
+# Adding probability density curve
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+xval <- seq(0,max(sim),length=nrow(sim))
+staty <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="royal blue", n = nrow(sim), args = list(shape=shapeML, rate=rateML))
+p3 + staty
+```
+
+The model is doing a decently good enough job of simulating real systolic blood pressures. However, I think the simulated data tends toward the lower blood pressure range than my data, which is likely more reflective of a population. Blood pressures tend to be closer to the 120+ range rather than the 100-110 range. It seems that the simulated data's participants are healthier than the real population, which seemed to be in the hypertensive category.  
+
+
+```{r}
+# Lastly, the beta probability density was plotted. 
+pSpecial <- ggplot(data=z, aes(x=Sys_BP/(max(Sys_BP + 0.1)), y=..density..)) +
+  geom_histogram(color="grey60",fill="cornsilk",size=0.2) + 
+  xlim(c(0,1)) +
+  geom_density(size=0.75,linetype="dotted")
+
+betaPars <- fitdistr(x=z$Sys_BP/max(z$Sys_BP + 0.1),start=list(shape1=1,shape2=2),"beta")
+shape1ML <- betaPars$estimate["shape1"]
+shape2ML <- betaPars$estimate["shape2"]
+
+statSpecial <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(z$Sys_BP), args = list(shape1=shape1ML,shape2=shape2ML))
+pSpecial + statSpecial
+```
+

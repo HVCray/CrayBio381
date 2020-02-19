@@ -19,6 +19,12 @@ output:
 ## Homework 05
 [Matrices, Lists, and Data Frames](Homework5.html)
 
+## Homework 06
+[Distributions and Fits](Homework_6.html)
+
+
+
+
 
 
 
