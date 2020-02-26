@@ -1,0 +1,86 @@
+---
+title: "Homework_7"
+author: "Hailey Cray"
+date: "2/26/2020"
+output: html_document
+---
+Data on systolic blood pressure were imported. These data are the systolic blood pressures of pregnant women with opioid use disorders. They are divided into two groups: Smokers and Non-Smokers. 
+```{r}
+library(ggplot2)
+library(MASS)
+z <- read.table("/Users/HaileyCray/Desktop/SysBPSmoker_NonSmoker.csv",header=TRUE,sep=",",stringsAsFactors=FALSE)
+```
+Each group has 25 individuals. The mean systolic blood pressure for the smokers was calculated to be 136, and the variance was calculated to be 271.83 with a standard deviation of 16.49. The mean systolic blood pressure for the non-smokers was 121, the variance was 239.86, and the standard deviation was 15.49. 
+
+For the smoker group: 
+```{r}
+norm_smoker <- rnorm(n=25,mean=136,sd=16.492)
+# generating a bar plot just to look at the data
+qplot(x=norm_smoker,
+      color=I("black"),
+      fill=I("orchid"))
+```
+For the non-smoker group: 
+```{r}
+norm_nonsmoker <- rnorm(n=25,mean=121,sd=15.49)
+# also looking at the data in a bar plot
+qplot(x=norm_nonsmoker,
+      color=I("black"),
+      fill=I("aquamarine2"))
+```
+Now coercing these data into a data frame: 
+```{r}
+SysBp_df <- data.frame(norm_smoker,norm_nonsmoker)
+str(SysBp_df)
+head(SysBp_df)
+```
+Now the data are in a data frame. Now to analyze as an ANOVA:
+```{r}
+n_group <- 2
+n_name <- c("Smoker","Non-Smoker")
+n_size <- c(25,25)
+n_mean <- c(136,121)
+n_sd <- c(16.492,15.49)
+t_group <- rep(n_name,n_size)
+print(t_group)
+table(t_group)
+```
+Now with the table, continuing on to generate the data for the ANOVA. 
+```{r}
+id <- 1:(sum(n_size))
+res_var <- c(rnorm(n=n_size[1],mean=n_mean[1],sd=n_sd[1]),
+           rnorm(n=n_size[2],mean=n_mean[2],sd=n_sd[2]))
+ano_data <- data.frame(t_group,res_var)
+str(ano_data)             
+```
+Proceeding with ANOVA: 
+```{r}
+ano_model <- aov(res_var~t_group, data=ano_data)
+# res_var as a function of ano_data
+print(ano_model)
+print(summary(ano_model))
+z <- summary(ano_model)
+str(z)
+aggregate(res_var~t_group,data=ano_data,FUN=mean)
+```
+Results are highly significant: p=0.00041: there is a significant difference in systolic blood pressure of pregnant smokers versus the systolic blood pressure of pregnant non-smokers. 
+
+Now plotting these data: 
+```{r}
+ano_plot <- ggplot(data=ano_data,
+                   aes(x=t_group,
+                       y=res_var,
+                       fill=t_group)) +
+                      geom_boxplot()
+print(ano_plot)
+```
+
+Saving these data: 
+```{r}
+# ggsave(filename="SysBPBoxandWhisker.pdf",plot=ano_plot,device="pdf")
+```
+Running new sets with new random numbers: Run #1: p=0.00041, Run #2: p=0.0973 (not significant) Run #3: 3.95e^07, highly significant. Since there are only 25 individuals in each group, the effect size can be really large with just one outlier in each group. Thus, more than 25 individuals are needed. When I tried running the code with 50 individuals in each treatment group, the p-values were consistently significant. This was also true when I bumped up to n=100 and above. 
+My thoughts were that with the 25 in each group, a single outlier (at the very low end of the spectrum for non-smokers and very high for smokers) could 'swing' the data a great deal. I could even see these on the box and whisker plot. On the trials with a non-significant p-value, there were outliers present. 
+
+
+
