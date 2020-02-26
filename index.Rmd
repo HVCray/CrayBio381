@@ -22,6 +22,12 @@ output:
 ## Homework 06
 [Distributions and Fits](Homework_6.html)
 
+## Homework 07
+[Data Analysis and Hypotheses](Homework_7.html)
+
+
+
+
 
 
 
