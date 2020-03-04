@@ -1,0 +1,86 @@
+---
+title: "Homework_8"
+author: "Hailey Cray"
+date: "3/4/2020"
+output: html_document
+---
+Homework #8: data manipulations using the dplyr package
+```{r}
+library(dplyr)
+data(iris)
+```
+
+
+Structure of iris: 
+```{r}
+class(iris)
+glimpse(iris)
+```
+The iris dataset is a data frame and has 150 observations and 5 variables (Sepal.Length, Sepal.Width, Petal.Length, Petal.Width, and Species)
+
+
+```{r}
+iris1 <- filter(iris, Species %in% c("virginica", "versicolor"), Sepal.Length>6, Sepal.Width>2.5)
+glimpse(iris1)
+```
+Now there are 56 observations but there are still 5 variables in the new iris1 data set. 
+
+
+```{r}
+iris2 <- select(iris1, Species, Sepal.Length, Sepal.Width)
+glimpse(iris2)
+```
+iris2 now has 3 variables (Species, Sepal.Length, and Sepal.Width) and 56 observations.
+
+Create an iris3 data frame from iris2 that orders the observations from largest to smallest sepal length. Show the first 6 rows of this dataset.
+```{r}
+iris3 <- arrange(iris2, by=desc(Sepal.Length))
+head(iris3)
+```
+
+
+```{r}
+iris4 <- mutate(iris3, Sepal.Area = Sepal.Length*Sepal.Width)
+glimpse(iris4)
+```
+iris4 has 4 variables (Species, Sepal.Length, Sepal.Width, and Sepal.Area) and 56 observations. 
+
+
+```{r}
+iris5 <- mutate(iris4, meanSepal.Length = mean(Sepal.Length), meanSepal.Width = mean(Sepal.Width), Sample_Size = n())
+print(iris5)
+```
+
+
+```{r}
+  iris6 <- group_by(iris4, Species) 
+  iris6 <- mutate(iris4, meanSepal.Length = mean(Sepal.Length), meanSepal.Width = mean(Sepal.Width), Sample.Size=n()) 
+ print(iris6)
+```
+
+Piping from iris to iris6: 
+```{r}
+iris %>%
+  filter(Species %in% c("virginica", "versicolor"), Sepal.Length>6, Sepal.Width>2.5) %>%
+  select(Species, Sepal.Length, Sepal.Width) %>%
+  arrange(by=desc(Sepal.Length)) %>%
+  mutate(Sepal.Area = Sepal.Length*Sepal.Width) %>%
+  group_by(Species) %>%
+  mutate(meanSepal.Length = mean(Sepal.Length), meanSepal.Width = mean(Sepal.Width), Sample.Size=n())
+  
+  
+  
+  
+  
+  
+  
+
+  
+
+
+
+
+
+
+```
+
