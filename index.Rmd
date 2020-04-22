@@ -32,7 +32,7 @@ output:
 [Structured Programming](Homework_09.1.html)
 
 ## Homework 10
-[For Loops and Randomization Tests](Homework_09.1.html)
+[For Loops and Randomization Tests](Homework_10.html)
 
 
 
