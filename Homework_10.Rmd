@@ -1,0 +1,218 @@
+---
+title: "Homework_10"
+author: "Hailey Cray"
+date: "4/21/2020"
+output: html_document
+---
+Part one: making a for loop to write a function that will calculate the number of zeroes in my numeric vector.
+```{r setup, include=FALSE}
+# ----------------------------------
+# FUNCTION count_my_zeroes
+# description: this function calculates the number of zeroes in a numeric vector.
+# inputs: a numeric vector
+# outputs: the number of zeroes in the vector.
+####################################
+count_my_zeroes <- function(vec=sample(0:9, 100, replace=TRUE)) {
+  counter <- 0
+  for(i in 1:length(vec)) {
+    if(vec[i] < 1) {
+      counter <- counter+1
+    }
+  }  
+
+return(counter)
+
+} 
+# setting up my function for the vector that I am using to count my number of zeroes
+
+# end of count_my_zeroes
+# ----------------------------------
+# Testing my coding to see if it worked:
+trying_forloop <- sample(0:9, 100, replace =TRUE)
+count_my_zeroes(vec=trying_forloop)
+print(trying_forloop)
+```
+Part 2: Now to use subsetting instead of a for loop: 
+```{r}
+# ----------------------------------
+# FUNCTION subset_count_my_zeroes
+# description: The subsetted version of the function count_my_zeroes to count the number of zeroes occuring in a numeric vector. 
+# inputs: my numeric vector from above
+# outputs: the number of zeroes in the vector
+####################################
+subset_count_my_zeroes <- function(vec=sample(0:9, 100, replace= TRUE)) {
+  
+  count_zeroes <- length(which(vec ==0))
+  
+  return(count_zeroes)
+
+} # end of subset_count_my_zeroes
+subset_count_my_zeroes()
+# ----------------------------------
+
+```
+Part 3: writing a function with input = two integers representing the number of rows and columns in a matrix. The matrix will be the output of these dimensions where each element is the product of row number * column number.
+```{r}
+# ----------------------------------
+# FUNCTION my_matrix
+# description:making my matrix where each element filling the matric is the product of row # * column #.
+# inputs: nrow number and ncol number
+# outputs: my_matrix with elements calculated by nrow * ncol. 
+####################################
+my_matrix <- function(nrow=5, ncol=5) {
+
+  matrix_p3 <- matrix(nrow= nrow, ncol= ncol)
+  for(i in 1:nrow) {
+    for(j in 1:ncol) {
+      matrix_p3[i,j] <- i * j
+    }
+  }  
+
+return(matrix_p3)
+
+} # end of my_matrix
+# ----------------------------------
+my_matrix(nrow=10, ncol=12)
+```
+Part 4: doing a randomization test for my own data.
+```{r}
+# Getting my necessary libraries loaded in
+library(ggplot2)
+
+# I am using systolic blood pressure measurement from n=25 smokers and n=25 non-smokers. Total sample is n=50.
+set.seed(50)
+
+# ----------------------------------
+# Making data frame bp_df with 2 columns: number of packs of cigarettes smoked per day and 25 rows of systolic blood pressure measurements ranging from 110 to 180 mm Hg. 
+####################################
+
+```
+```{r}
+# ----------------------------------
+# FUNCTION get_data
+# description:bring in data for analysis
+# inputs: file name
+# outputs: 2 column data frame of data: smoker status (as 0 or 1) and systolic blood pressure measurement in mm Hg. 
+####################################
+
+z <- NULL
+get_data <- function(z=NULL) {
+
+if(is.null(z)) {
+  x_obs <- rbinom(50, 1, 0.5)
+  y_obs <- sample(80:180,50, replace=TRUE)
+  my_df <- data.frame(x_obs,y_obs)
+}
+  my_df <- read.csv(file=z,
+                    header=TRUE,
+                    stringsAsFactors = FALSE)
+return(print(my_df))
+print(my_df)
+}
+
+# end of get_data
+# ----------------------------------
+
+
+# ----------------------------------
+# FUNCTION get_slope
+# description: calculating slope of randomization test
+# inputs: data frame my_df with 2 columns: 1 or 0 (1 is smoker, 0 is non-smoker) and systolic blood pressure in mmHg for 50 individuals
+# outputs: slope for regression analysis
+####################################
+function_name <- function(z=NULL) {
+  if(is.null(z)){
+    x_obs <- rbinom(50, 1, 0.5)
+    y_obs <- sample(80:180,50, replace=TRUE)
+    z <- data.frame(x_obs,y_obs) }
+  for(i in 1:nrow(z)) {
+    ifelse(z[i,0] == "Non-Smoker", z[i,10 <- "Smoker" 
+  z <- lm(z[1]~z[2])
+  z <- summary(z)
+  z <- z$coefficients[1,2]
+  slope_bp <- z
+  return(slope) }
+
+
+} # end of function_name
+# ----------------------------------
+# ASK LAUREN ABOUT WHY IT TELLS ME THAT THERE IS AN ERROR IN 1:nrow(z): argument of length 0
+
+
+# ----------------------------------
+# FUNCTION reshuffle_data
+# description: randomizing data 
+# inputs: my_df
+# outputs: reshuffled my_df
+####################################
+reshuffle_data <- function(z=NULL) {
+  if(is.null(z)){
+    x_obs <- rbinom(50, 1, 0.5)
+    y_obs <- sample(80:180,50, replace=TRUE)
+    z <- data.frame(x_obs, y_obs) }
+  shuffled_df <- z
+
+return(shuffled_df)
+
+} # end of reshuffle_data
+# ----------------------------------
+print(shuffled_df)
+
+# ASK LAUREN: RETURNS A NULL STATEMENT
+
+
+
+# ----------------------------------
+# FUNCTION get_sig
+# description: generate a p-value for significance
+# inputs: summary of my slope and coefficients, my simulated vector, reshuffled
+# outputs: my p-value, 
+####################################
+get_sig <- function(z=NULL) {
+  if(is.null(z)) {
+    z <- 
+# NOT SURE HOW TO DO THIS
+
+# Function body
+
+return("Checking...get_sig")
+
+} # end of get_sig
+# ----------------------------------
+
+  
+# ----------------------------------
+# FUNCTION scatterplot_bp
+# description: scatterplot of smoker status vs systolic blood pressure using the simulated "fake" values
+# inputs: my real metric vs simulated metric
+# outputs: scatterplot
+####################################
+scatterplot_bp <- function(z=NULL) {
+  if(is.null(z)) {
+    z <- 
+      
+  my_df1 <- data.frame(SmokerYN=seq_along(z[[1[[), 
+  
+
+
+
+
+} # end of scatterplot_bp
+# ----------------------------------
+# Bringing in my own data: 
+  n_sim <- 100 # 100 reps
+  x_sim <- rep(NA, n_sim) # an empty vector for simulated slopes. Sophie Kogut helped with this code.
+  
+  my_df2 <- get_data(z="/Users/HaileyCray/iCloud/Desktop/Homework_10_bp_data.csv")
+
+x_obs <- get_slope(z=my_df1)
+for (i in seq_len(n_sim)) {
+  x_sim[i] <- get_slope(reshuffle_data(my_df1))
+}
+slope1 <- list(x_obs, x_sim)
+p_vals <- get_sig(slope1)
+
+scatterplot_bp(slope1)
+
+```
+
