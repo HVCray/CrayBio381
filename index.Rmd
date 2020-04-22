@@ -28,6 +28,11 @@ output:
 ## Homework 08
 [dplyr](Homework_8.html)
 
+## Homework 09
+[Structured Programming](Homework_09.1.html)
+
+## Homework 10
+[For Loops and Randomization Tests](Homework_09.1.html)
 
 
 

@@ -3,6 +3,8 @@ title: "Homework_10"
 author: "Hailey Cray"
 date: "4/21/2020"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 Part one: making a for loop to write a function that will calculate the number of zeroes in my numeric vector.
 ```{r setup, include=FALSE}
@@ -95,49 +97,35 @@ set.seed(50)
 # outputs: 2 column data frame of data: smoker status (as 0 or 1) and systolic blood pressure measurement in mm Hg. 
 ####################################
 
-z <- NULL
-get_data <- function(z=NULL) {
-
-if(is.null(z)) {
-  x_obs <- rbinom(50, 1, 0.5)
-  y_obs <- sample(80:180,50, replace=TRUE)
-  my_df <- data.frame(x_obs,y_obs)
-}
-  my_df <- read.csv(file=z,
-                    header=TRUE,
-                    stringsAsFactors = FALSE)
-return(print(my_df))
+file_name <- "Homework_10_bp_data.csv"
+get_data <- function(z=file_name) {
+  my_df <- read.table(file=z,
+                    header=FALSE,
+                    stringsAsFactors = FALSE, 
+                    sep=",")
 print(my_df)
 }
+bp_data <- get_data()
 
 # end of get_data
 # ----------------------------------
+# FUNCTION calc_anova
+# description: drawing down from above: bringing in data from get_data function
+# inputs: data from above chunk: bringing down my_df as a data frame from get_data function
+# outputs: ANOVA for smokers vs nonsmokers blood pressure (systolic)
+####################################: 
+# ano_model <- aov(res_var~t_group, data=ano_data)
+calc_anova <- function(data=bp_data) {
+  
+ano_bp <- aov(V1~V2, data=bp_data)
+# calling data from above
+summary(ano_bp)
+ }
 
+calc_anova()
 
+ # end of: calc_anova
 # ----------------------------------
-# FUNCTION get_slope
-# description: calculating slope of randomization test
-# inputs: data frame my_df with 2 columns: 1 or 0 (1 is smoker, 0 is non-smoker) and systolic blood pressure in mmHg for 50 individuals
-# outputs: slope for regression analysis
-####################################
-function_name <- function(z=NULL) {
-  if(is.null(z)){
-    x_obs <- rbinom(50, 1, 0.5)
-    y_obs <- sample(80:180,50, replace=TRUE)
-    z <- data.frame(x_obs,y_obs) }
-  for(i in 1:nrow(z)) {
-    ifelse(z[i,0] == "Non-Smoker", z[i,10 <- "Smoker" 
-  z <- lm(z[1]~z[2])
-  z <- summary(z)
-  z <- z$coefficients[1,2]
-  slope_bp <- z
-  return(slope) }
-
-
-} # end of function_name
-# ----------------------------------
-# ASK LAUREN ABOUT WHY IT TELLS ME THAT THERE IS AN ERROR IN 1:nrow(z): argument of length 0
-
 
 # ----------------------------------
 # FUNCTION reshuffle_data
@@ -154,65 +142,50 @@ reshuffle_data <- function(z=NULL) {
 
 return(shuffled_df)
 
-} # end of reshuffle_data
+} 
+shuffled_data <- reshuffle_data()
+print(shuffled_data)
+# end of reshuffle_data
 # ----------------------------------
-print(shuffled_df)
-
-# ASK LAUREN: RETURNS A NULL STATEMENT
-
-
 
 # ----------------------------------
-# FUNCTION get_sig
-# description: generate a p-value for significance
-# inputs: summary of my slope and coefficients, my simulated vector, reshuffled
-# outputs: my p-value, 
+# FUNCTION shuffle_anova
+# description: generate a p-value for significance for shuffled data
+# inputs: shuffled_data
+# outputs: my p-value for the randomized data 
 ####################################
-get_sig <- function(z=NULL) {
-  if(is.null(z)) {
-    z <- 
-# NOT SURE HOW TO DO THIS
-
-# Function body
-
-return("Checking...get_sig")
-
-} # end of get_sig
-# ----------------------------------
-
+shuffle_anova <- function(data=shuffled_data) {
   
+ano_shuffle <- aov(x_obs~y_obs, data=shuffled_data)
+# calling data from above
+summary(ano_shuffle)
+ }
+
+shuffle_anova()
+ # end of get_sig
+sig_shuffle <- shuffle_anova()
+print(sig_shuffle)
 # ----------------------------------
-# FUNCTION scatterplot_bp
-# description: scatterplot of smoker status vs systolic blood pressure using the simulated "fake" values
-# inputs: my real metric vs simulated metric
-# outputs: scatterplot
-####################################
-scatterplot_bp <- function(z=NULL) {
-  if(is.null(z)) {
-    z <- 
-      
-  my_df1 <- data.frame(SmokerYN=seq_along(z[[1[[), 
-  
-
-
-
-
-} # end of scatterplot_bp
-# ----------------------------------
-# Bringing in my own data: 
-  n_sim <- 100 # 100 reps
-  x_sim <- rep(NA, n_sim) # an empty vector for simulated slopes. Sophie Kogut helped with this code.
-  
-  my_df2 <- get_data(z="/Users/HaileyCray/iCloud/Desktop/Homework_10_bp_data.csv")
-
-x_obs <- get_slope(z=my_df1)
-for (i in seq_len(n_sim)) {
-  x_sim[i] <- get_slope(reshuffle_data(my_df1))
-}
-slope1 <- list(x_obs, x_sim)
-p_vals <- get_sig(slope1)
-
-scatterplot_bp(slope1)
-
 ```
+The p-value calculated for my real data was 0.00116: 
+Df Sum Sq Mean Sq F value
+t_group      1   2718  2718.3   11.94
+Residuals   48  10929   227.7        
+             Pr(>F)   
+t_group     0.00116 **
+This was significant, as expected. We know that people who smoke generally have a higher blood pressure than non-smokers. 
+
+For my randomized (reshuffled) data, this relationship between smoking status and blood pressure was no longer significant: the p-value was 0.366.
+ Df Sum Sq Mean Sq F value Pr(>F)
+y_obs        1  0.212  0.2122   0.834  0.366
+Residuals   48 12.208  0.2543   
+
+So now if I run the code again with different values using the set.seed function to see what my shuffled p-value is, I get p = 0.933. When I run it one more time with different values, my p-value = 0.174. I'm continuously getting non-signficant p-values, which suggests that there is actually a relationship between systolic blood pressure and smoking status in my original data. It's highly unlikely that I'll get positive smoking status lined up with high blood pressure readings when I randomly reshuffle the data, which lends support to my hypothesis that positive (present) smoking status contributes to higher systolic blood pressure. 
+
+
+
+
+
+
+
 
