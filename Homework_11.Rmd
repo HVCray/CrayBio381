@@ -1,0 +1,168 @@
+---
+title: "Homework_11"
+author: "Hailey Cray"
+date: "4/26/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+Batch Processing 
+```{r}
+# Loading in global variables and data sets.
+library(dplyr)
+data("ToothGrowth")
+library(MASS)
+data("PlantGrowth")
+
+# Global variables
+fileOut <- "StatsSummary.csv"
+```
+Now I am looking at these data sets that are built into R, as I finished my thesis data analysis and no longer have data of my own to analyze. 
+```{r}
+head(ToothGrowth)
+# len = tooth length, supp = supplement type, VC or OJ, dose = dose in mg/day, n=60
+
+
+
+# Global variables
+file_folder <- "Tooth_Growth/"
+nfiles <- 1000
+file_out <- "StatsSummary_HW11.csv"
+file_names <- list.files(path=file_folder)
+
+df_tg <- data.frame(ToothGrowth) 
+length_t <- arrange(ToothGrowth, by=desc(len))
+length_t$supp <- gsub("X", "", length_t$supp)
+length_t <- ToothGrowth[1:60, 1:2]
+length_t$supp <- gsub("\\.", "-", length_t$supp)
+print(length_t)
+# ---------------------
+
+# Creating files
+# ----------------------------------
+# FUNCTION file_builder
+# description: files for regression
+# inputs: file_folder <- "Tooth_Growth/"
+# nfiles <- 1, n_size = c(min, max) number of rows in file
+# file_names <- list.files(path=file_folder
+# outputs: files
+####################################
+file_builder <- function(nfiles =1,
+                         n_size=c(1,60),
+                         file_folder="Tooth_Growth/",
+                         t_length=1:60) {
+
+for (i in 1:nrow(t_length)) {
+  var_x <- t_length[i,1] # length
+  var_y <- t_length[i,2] # supplement
+
+my_df <- data.frame(var_x = ToothGrowth[[which(colnames==len]], var_y=ToothGrowth[[which(colnames==supp)]])
+                                         
+colnames(my_df) <- c(var_x, var_y)
+print(my_df)
+
+# ----------------------------------
+file_label <- paste(file_folder,
+                       "ToothGrowth",
+                       formatC(i,
+                       width=3,
+                       format="d",
+                       flag="0"),
+                       ".csv",sep="")
+
+# set up data file and incorporate time stamp and minimal metadata
+write.table(cat("# Tooth growth data for batch processing","\n",
+                    "# timestamp: ",as.character(Sys.time()),"\n",
+                    "# HVC","\n",
+                    "# ------------------------", "\n",
+                    "\n",
+                    file=file_label,
+                    row.names="",
+                    col.names="",
+                    sep=""))
+
+# now add the data frame
+write.table(x=my_df,
+            file=file_label,
+            sep=",",
+            row.names=FALSE,
+            append=TRUE)
+}
+ # End of file_builder --------------------------------------------
+
+##################################################
+# function: reg_stats
+# fits linear model, extracts statistics
+# input: 2-column data frame (x and y)
+# output: slope, p-value, and r2
+#------------------------------------------------- 
+
+reg_stats <- function(d=NULL) {
+             if(is.null(d)) {
+               xVar <- runif(10)
+               yVar <- runif(10)
+               d <- data.frame(xVar,yVar)
+             }
+  . <- lm(data=d,d[,2]~d[,1])
+  . <- summary(.)
+  _l <- list(Slope=.$coefficients[2,1],
+             pVal=.$coefficients[2,4],
+             r2=.$r.squared)
+  
+return(stats_list)
+
+ }
+ # end of reg_stats 
+
+
+# Creating a file to hold file summary statistics
+file_folder <- "Tooth_Growth/"
+nfiles <- 1000
+file_out <- "StatsSummary_HW11.csv"
+file_names <- list.files(path=file_folder)
+
+file_builder(ToothGrowth=ToothGrowth,t_length=t_length)
+
+
+# batch process by looping through individual files
+
+ID <- seq_along(file_names)
+file_name <- file_names
+slope <- rep(NA, length(file_names))
+pval <- rep(NA, length(file_names))
+r2 <- rep(NA, length(file_names))
+
+stat_out <- data.frame(ID,file_name,slope,pval,r2)
+
+# Batch Process
+
+for (i in seq_along(file_names)) {
+  data <- read.table(file=paste(file_folder,file_names[i],sep=""),
+                     sep=",",
+                     header=TRUE) 
+  . <- reg_stats(d=data)
+  stats_out[i,3:5] <- unlist(.)
+}
+  
+# set up output file and incorporate time stamp and minimal metadata
+  write.table(cat("# Summary stats for ",
+                    "batch processing of regression models","\n",
+                    "# timestamp: ",as.character(Sys.time()),"\n",
+                    "# HVC","\n",
+                    "# ------------------------", "\n",
+                    "\n",
+                    file=file_out,
+                    row.names="",
+                    col.names="",
+                    sep=""))
+  
+# now add the data frame
+  write.table(x=stats_out,
+              file=file_out,
+              row.names=FALSE,
+              col.names=TRUE,
+              sep=",",
+              append=TRUE)
+file_out <- "Statistics_Summary_HW11.csv"
+```
+

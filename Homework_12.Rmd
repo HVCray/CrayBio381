@@ -1,0 +1,75 @@
+---
+title: "Homework_12"
+author: "Hailey Cray"
+date: "4/28/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+# Downloading necessary preliminaries
+library(ggplot2)
+library(ggthemes)
+library(patchwork)
+library(ColorPalette)
+library(colorBlindness)
+library(colorspace)
+library(wesanderson)
+library(ggsci)
+library(TeachingDemos)
+
+# Setting up my two dataframes 
+my_df <- women
+str(my_df)
+print(my_df)
+
+my_df2 <- iris
+str(my_df2)
+print(my_df2)
+# Making a scatterplot with title and axis lables
+g1 <- ggplot(data=my_df, mapping=aes(x=height,y=weight)) + geom_point() +
+  geom_smooth() +
+  ggtitle("Scatterplot of n=15 American Women's Heights Compared to Weights") 
+
+# From Environmental Computing: experimenting with changing the fonts!
+hvc_theme1 <- theme(plot.title = element_text(family = "Times New Roman", face = "bold", size = (15)), 
+                 legend.title = element_text(colour = "slateblue4",  face = "bold.italic", family = "Times New Roman", size=(12)),
+                  axis.title = element_text(family = "Times New Roman", size = (10), colour = "violetred4"),
+                  axis.text = element_text(family = "Courier", colour = "navy", size = (10)))
+ 
+
+print(g1  + hvc_theme1 + labs(y="Weight (lbs)", x="Height (inches)"))
+
+
+# Now making a grouped scatterplot using the iris3 dataset: 
+
+g2 <- ggplot(data=my_df2, aes(Sepal.Length, Petal.Length, colour=Species)) + geom_point() 
+print(g2 + ggtitle("Petal Length and Sepal Length of 3 Non-Native Iris Species in Vermont") + labs(y="Petal Length (cm)", x="Sepal Length (cm)"))
+
+g3 <- ggplot(data=my_df2, aes(Species, Petal.Width, fill = Species)) + geom_boxplot()
+print(g3 + ggtitle("Petal Width by 3 Species of Iris Non-Native to Vermont" ) + labs(y="Petal Width (inches)", x="Species of Iris"))
+
+g4 <- ggplot(data=my_df2, aes(group=Species, x=Sepal.Width,y=Petal.Width)) + geom_boxplot(fill="paleturquoise1",outlier.shape=NA) + geom_point(position=position_jitter(width=0.1,height=0.25), color="seashell4",size=0.75)
+print(g4 + ggtitle("Sepal Width and Petal Width of 3 Species of Iris Non-Native to Vermont" ) + labs(y="Petal Width (cm)", x="Sepal Width (cm)"))
+
+# Trying a stacked bar chart with iris:
+
+g5 <- ggplot(data=my_df2,aes(x=Sepal.Width, fill=Species)) + geom_bar()
+
+print(g5 + ggtitle("Sepal Width of 3 Species of Iris Non-Native to Vermont" ) + labs(y="Frequency", x="Sepal Width (cm)")) + scale_fill_manual(values=c("plum1", "skyblue", "palegreen"))
+
+g6 <- ggplot(data=my_df2, mapping=(aes(x=Sepal.Length,y=Sepal.Width,shape=Species,color=Species))) + geom_point(size=4)
+print(g6 + ggtitle("Sepal Width Compared to Sepal Length of 3 Species of Iris Non-Native to Vermont" ) + labs(y="Sepal Width (cm)", x="Sepal Length(cm)")) 
+
+ggsave(plot=g2, filename="Scatterplot G2",width=5,height=3,units="in",device="pdf")
+
+ggsave(plot=g3, filename="Boxplot G3",width=5,height=3,units="in",device="pdf")
+
+ggsave(plot=g4, filename="Boxplot overlay G4",width=5,height=3,units="in",device="pdf")
+
+ggsave(plot=g5, filename="Custom Color Bar G5",width=5,height=3,units="in",device="pdf")
+
+ggsave(plot=g6, filename="Shaped Scatterplot G6",width=5,height=3,units="in",device="pdf")
+```
+
