@@ -3,6 +3,8 @@ title: "Homework_6"
 author: "Hailey Cray"
 date: "2/19/2020"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}

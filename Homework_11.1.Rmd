@@ -1,0 +1,116 @@
+---
+title: "Homework_11.1"
+author: "Hailey Cray"
+date: "4/29/2020"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+# ----------------------------------
+# FUNCTION FileBuilder
+# description:create a set of randome files for gamma distribution
+# inputs: file_n= number of files to create, file_folder = name of folder for the files, file_size = c(min, max) for the number of rows in the file
+# outputs: file set
+####################################
+FileBuilder <- function(file_n=10, file_folder="Homework_11") {
+
+for (i in seq_len(file_n)) {
+var_x <- c(rep("Smoker",13),rep("Non-Smoker",12))
+var_y <- rgamma(25, rate=0.3299181, shape=43.7206)
+my_df <- data.frame(var_x,var_y)
+
+# Making file label
+file_label <- paste(file_folder,"ranFile",formatC(i,width=3,format="d",flag="0"), ".csv", sep="")
+
+# Setting up my data file and adding the timestamp and metadata
+write.table(cat("# Simulated data for batch processing on HW #11", "\n", "# timestamp: ",as.character(Sys.time()), "\n", "# HVC", "\n", "# -----------------", "\n", "\n", file=file_label,row.name="", col.names="", sep=""))
+
+# Adding data frame:
+write.table(x=my_df,
+            file=file_label,
+            sep=",",
+            row.names=FALSE,
+            append=TRUE)
+
+}
+}
+ # end of FileBuilder
+# ----------------------------------
+##################################################
+# function: regStats
+# fits linear model, extracts statistics
+# input: 2-column data frame (x and y)
+# output: slope, p-value, and r2
+#------------------------------------------------- 
+regStats <- function(d=NULL) {
+  . <- aov(data=d,d[,2]~d[,1])
+  statsList <- summary(.)[[1]][["Pr(>F)"]][1]
+  return(statsList)
+  
+}
+# end of reg_stats
+# ----------------------------------
+FileBuilder()
+file_folder <- "Homework_11/"
+n_files <- 5
+file_out <- "Stats_Summary_HW11.csv"
+file_names <- list.files(path=file_folder)
+
+ID <- seq_along(file_names)
+file_name <- file_names
+pval<- rep(NA,n_files)
+stats_out <- data.frame(ID,file_name,pval)
+print(stats_out)
+print(file_names)
+
+
+# Batch process by looping through each file
+for (i in seq_along(file_names)) {
+  my_data <- read.table(file=paste(file_folder,file_names[i],sep=""),header=TRUE,sep=",")
+  . <- regStats(my_data)
+  stats_out[i,3] <- unlist(.)
+  
+}
+print(stats_out)
+
+
+
+# Now for batch processing
+# Global variables ---------------------
+file_folder <- "Homework_11"
+n_files <- 5
+file_out <- "Stats_Summary_HW11.csv"
+#  ---------------------
+
+# Creating the 10 random sets
+file_names <- list.files(path=file_folder)
+
+# Creating data frame to hold summary stats
+
+ID <- seq_along(file_names)
+file_name <- file_names
+pval <- rep(NA,n_files)
+stats_out <- data.frame(ID,file_name,pval)
+
+# Batch process by looping through each file
+#for (i in seq_along(file_names)) {
+  #my_data <- read.table(file=paste(file_folder,file_names[i],sep="",header=FALSE))
+  #. <- regStats(my_data)
+  #stats_out(i,3:5] <- unlist(.)
+  
+#}
+# Making output file and put in time stamp and metadata
+
+write.table(cat("Summary Stats for HW #11","\n", "# timestamp: ",as.character(Sys.time()), "\n", "# HVC", "\n", "# --------------------", "\n", "\n", file=file_out,row.names=" ",col.names= " ", sep=" "))
+
+# Adding data frame
+write.table(x=stats_out,file=file_out,row.names=FALSE, col.names=TRUE, sep=",", append=FALSE)
+
+
+
+ 
+
+```
+
